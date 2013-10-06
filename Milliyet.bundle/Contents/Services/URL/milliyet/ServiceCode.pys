@@ -1,0 +1,45 @@
+HTTP_HEADERS = {
+	'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0',
+	'Referer': 'http://staticloads.com/players/jw.5.7.1896/player.swf'
+}
+RE_VIDEO_URL = Regex("videoMp4Url = '(.*?)';")
+####################################################################################################
+def MetadataObjectForURL(url):
+	html = HTML.ElementFromURL(url)
+	title = html.xpath("//div[@class='overview']/div[@class='detTxt']/p/text()")[0].strip()
+	return VideoClipObject(
+		title = title,
+	)
+####################################################################################################
+def MediaObjectsForURL(url):
+	return [
+		MediaObject(
+			container = Container.MP4,
+			video_codec = VideoCodec.H264,
+			video_resolution = '360',
+			audio_codec = AudioCodec.AAC,
+			audio_channels = 2,
+			optimized_for_streaming = True,
+			parts = [
+				PartObject(
+					key = Callback(PlayVideo, url=url)
+				)
+			]
+		)
+	]
+####################################################################################################
+@indirect
+def PlayVideo(url):
+	data = HTTP.Request(url).content
+	video = RE_VIDEO_URL.search(data)
+	if video:
+		oc = ObjectContainer(http_headers=HTTP_HEADERS)
+		oc.add(VideoClipObject(
+			items = [
+				MediaObject(
+					parts = [PartObject(key=video.group(1))]
+				)
+			]
+		))
+		return oc
+	raise Ex.MediaNotAvailable

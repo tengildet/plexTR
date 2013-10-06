@@ -1,0 +1,57 @@
+import re
+VKONTAKTE_VIDEORES =  ['240', '360', '480', '720']
+VKONTAKTE_VALUE = ['1','2']
+RE_TITLE = Regex("var video_title = '(.*?)';")
+RE_THUMB = Regex('id="player_thumb" src="(.*?)"/>')
+####################################################################################################
+def MetadataObjectForURL(url):
+        data = HTTP.Request(url).content
+    	return VideoClipObject(thumb=RE_THUMB.search(data).group(1),
+		title = RE_TITLE.search(data).group(1))
+####################################################################################################
+def MediaObjectsForURL(url):
+        ret = []
+        fmts = list(VKONTAKTE_VIDEORES)
+        fmts.reverse()
+	for fmt in fmts:
+            index = VKONTAKTE_VIDEORES.index(fmt)
+            ret.append(MediaObject(
+                video_codec = VideoCodec.H264,
+                audio_codec = AudioCodec.AAC,
+		video_resolution =VKONTAKTE_VIDEORES[index],
+		container = 'mp4',
+		parts = [PartObject(key=Callback(PlayVideo, url = url, fmt=index))]
+		))
+        return ret
+####################################################################################################
+def PlayVideo(url, fmt):
+	link=HTTP.Request(url).content
+	host=re.compile("host=([^\&]+)").findall(link)
+	uid=re.compile("uid=([^\&]+)").findall(link)
+	vtag=re.compile("vtag=([^\&]+)").findall(link)
+	hd = re.compile("hd_def=([^\&]+)").findall(link)
+	if not hd or hd[0]=="-1":
+		hd = re.compile("hd=([^\&]+)").findall(link)
+	flv = re.compile("no_flv=(.*?)&").findall(link)
+	try:
+		vkstream=host[0]+'u'+uid[0]+'/videos/' + vtag[0]
+		x=(int(hd[0])+1)
+                if hd >0 or flv == 1:
+                        if x>=fmt:
+                            aa=fmt
+                        else:
+                            aa=x
+                        if aa==4:
+                            a='.720'
+                        elif aa==3:
+                            a='.480'
+                        elif aa==2:
+                            a='.360'
+                        else:
+                            a='.240'
+                        url=vkstream+a+'.mp4'
+	except:
+		url='http://smartsmart.pusku.com/enigma/zortals/novideo.mp4'
+	Log('vkurl=%s',url)
+	return Redirect(url)
+
