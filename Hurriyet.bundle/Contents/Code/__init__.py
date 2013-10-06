@@ -1,6 +1,6 @@
+# turkportal.org
 NAME = 'hurriyet'
 BASE_URL = 'http://webtv.hurriyet.com.tr/'
-#SECTION_URL = 'http://www.milliyet.tv'
 ART = 'bg.png'
 ICON = 'logo.png'
 RE_VIDEO = Regex("videoMp4Url = '(.*?)';")
@@ -27,8 +27,5 @@ def Tags(title,url):
                 url=category.xpath('./a/@href')[0]
 		title=category.xpath("./a[contains (@class,'videoTitle')]")[0].text
 		thumb=category.xpath("./a/img/@src")[0]
-		#summary = category.xpath("./p")[0].text.strip()
-		#summary1 = category.xpath("./p/strong[1]")[0].text.strip().title()
-		#summary2 = category.xpath("./p/strong[2]")[0].text.strip()
                 oc.add(VideoClipObject(url=url,title = title, thumb=thumb))
 	return oc
