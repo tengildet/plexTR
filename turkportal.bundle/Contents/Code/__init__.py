@@ -1,8 +1,7 @@
-import urllib
-NAME = 'turkportal'
-SECTION_URL = 'http://smartsmart.pusku.com/enigma/proxy.php?kim='
-ART = 'backdrop.png'
-ICON = 'turkportal.png'
+NAME = 'Turkportal'
+ART = 'art.png'
+ICON = 'icon.png'
+BASE_URL = 'http://smartsmart.pusku.com/enigma/plextrkp.php?port=800'
 ####################################################################################################
 def Start():
 	Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
@@ -11,16 +10,18 @@ def Start():
 	DirectoryObject.thumb = R(ICON)
 ####################################################################################################
 @handler('/video/turkportal', NAME, thumb=ICON, art=ART)
-def MainMenu(url='http://smartsmart.pusku.com/enigma/proxy.php'):
+def MainMenu(title='ert',url=BASE_URL):
 	oc = ObjectContainer(view_group='List')
-	for category in XML.ElementFromURL(url).xpath('//AnaPortal'):
-		baslik = category.xpath('./Baslik')[0].text.upper()
-		resim =category.xpath('./Resim')[0].text
-		bak = category.xpath('./PlayOrStream')[0].text
-		stream = category.xpath('./Streamlink')[0].text
-		if bak=='xor': 
-			url=SECTION_URL + urllib.quote(category.xpath('./PlayList')[0].text)
-			oc.add(DirectoryObject(key = Callback(MainMenu,url=url),title =baslik,thumb=resim))
-		else:
-			oc.add(VideoClipObject(title=baslik, thumb=resim, url=stream, summary='TURKPORTAL'))		
+	for category in XML.ElementFromURL(url).xpath('//channel'):
+                title=category.xpath('./title')[0].text
+                try:
+                        thumb=category.xpath('./logo_30x30')[0].text
+                except:
+                        thumb = R(ICON)
+                try :
+                        url = category.xpath('.//stream_url')[0].text
+                        oc.add(VideoClipObject(url=url,title =title,thumb=thumb))
+                except:
+                        url = category.xpath('.//playlist_url')[0].text
+                        oc.add(DirectoryObject(key = Callback(MainMenu, title=title, url=url),title =title, thumb=thumb))
 	return oc
