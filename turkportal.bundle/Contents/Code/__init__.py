@@ -1,6 +1,6 @@
 NAME = 'Turkportal'
-ART = 'art.png'
-ICON = 'icon.png'
+ART = 'backdrop.png'
+ICON = 'turkportal.png'
 BASE_URL = 'http://smartsmart.pusku.com/enigma/plextrkp.php?port=800'
 ####################################################################################################
 def Start():
