@@ -33,25 +33,28 @@ def PlayVideo(url, fmt):
 	if not hd or hd[0]=="-1":
 		hd = re.compile("hd=([^\&]+)").findall(link)
 	flv = re.compile("no_flv=(.*?)&").findall(link)
-	try:
-		vkstream=host[0]+'u'+uid[0]+'/videos/' + vtag[0]
-		x=(int(hd[0])+1)
-                if hd >0 or flv == 1:
-                        if x>=fmt:
-                            aa=fmt
-                        else:
-                            aa=x
-                        if aa==4:
-                            a='.720'
-                        elif aa==3:
-                            a='.480'
-                        elif aa==2:
-                            a='.360'
-                        else:
-                            a='.240'
-                        url=vkstream+a+'.mp4'
-	except:
-		url='http://smartsmart.pusku.com/enigma/zortals/novideo.mp4'
+	if flv==1:
+            try:
+                    vkstream=host[0]+'u'+uid[0]+'/videos/' + vtag[0]
+                    x=(int(hd[0])+1)
+                    if hd >0 or flv == 1:
+                            if x>=fmt:
+                                aa=fmt
+                            else:
+                                aa=x
+                            if aa==4:
+                                a='.720'
+                            elif aa==3:
+                                a='.480'
+                            elif aa==2:
+                                a='.360'
+                            else:
+                                a='.240'
+                            url=vkstream+a+'.mp4'
+            except:
+                    url='http://smartsmart.pusku.com/enigma/zortals/novideo.mp4'
+        else:
+            url=re.compile("url240=(.*?)&").findall(link)[0]
 	Log('vkurl=%s',url)
 	return Redirect(url)
 
