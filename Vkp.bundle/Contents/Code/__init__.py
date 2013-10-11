@@ -16,10 +16,10 @@ def Start():
 @handler('/video/vkp', NAME, thumb=ICON, art=ART)
 def MainMenu():
 	oc = ObjectContainer(view_group='List')
-	for category in HTML.ElementFromURL(PROXY+BASE_URL).xpath("//a[contains (@class, 'vkcat')]"):
+	for category in HTML.ElementFromURL(BASE_URL).xpath("//a[contains (@class, 'vkcat')]"):
 		url =str(category.xpath('./@href')[0])
 		title=category.xpath('.')[0].text
-		oc.add(DirectoryObject(key = Callback(Tags, title=title, url=url),title = url[67:-1].upper()))
+		oc.add(DirectoryObject(key = Callback(Tags, title=title, url=url),title = url[19:-1].upper()))
 	return oc
 ####################################################################################################
 @route('/video/vkp/tags')
@@ -34,7 +34,7 @@ def Tags(title,url, pag=1):
                 oc.add(DirectoryObject(key = Callback(Videom, title=title, url=urla, thumb = thumb),title = title, thumb=thumb, summary = 'turkportal.org'))
         if XHTML.xpath('//*[@id="navi"]'):
                 pagx = int(pag)+1
-                oc.add(DirectoryObject(key = Callback(Tags, title=title, url=url, pag=pagx),title = str(pagx), thumb=thumb, summary = 'turkportal.org'))
+                oc.add(DirectoryObject(key = Callback(Tags, title=title, url=url, pag=pagx),title = 'Next Page', thumb=thumb, summary = 'turkportal.org'))
                 
 	return oc
 ####################################################################################################
