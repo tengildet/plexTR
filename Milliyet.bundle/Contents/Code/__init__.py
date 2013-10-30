@@ -3,7 +3,7 @@ BASE_URL = 'http://www.milliyet.tv/Milliyet-Tv/'
 SECTION_URL = 'http://www.milliyet.tv'
 ART = 'bg.png'
 ICON = 'logo.jpg'
-RE_VIDEO = Regex("videoMp4Url = '(.*?)';")
+RE_VIDEO_URL = Regex("videoMp4Url = '(.*?)';")
 ####################################################################################################
 def Start():
 	Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
@@ -33,5 +33,38 @@ def Tags(title,url):
 		summary = category.xpath("./p")[0].text.strip()
 		summary1 = category.xpath("./p/strong[1]")[0].text.strip().title()
 		summary2 = category.xpath("./p/strong[2]")[0].text.strip()
-                oc.add(VideoClipObject(url=url,title = title, thumb=thumb, summary = summary+summary1+'\n'+'Izlenme: '+summary2))
+                #oc.add(VideoClipObject(url=url,title = title, thumb=thumb, summary = summary+summary1+'\n'+'Izlenme: '+summary2))
+		oc.add(DirectoryObject(key = Callback(Play, url=url,title = title, thumb=thumb),title = title, thumb=thumb, summary = summary+summary1+'\n'+'Izlenme: '+summary2))
+
 	return oc
+
+####################################################################################################
+@route('/video/milliyet/play')
+def Play(url, title, thumb):
+	data = HTTP.Request(url).content
+	try:
+                oc = ObjectContainer()
+		video = RE_VIDEO_URL.search(data)
+		oc.add(VideoClipObject(key = Callback(Lookup, url = video.group(1), title = title, thumb = thumb),	rating_key =video.group(1) ,title = title,	thumb = thumb, items = [MediaObject(parts = [PartObject(key = video.group(1))],optimized_for_streaming = True)]))
+		return oc
+
+	except:
+		return MessageContainer("Hata","Bu Haber Server da yok..")
+
+####################################################################################################
+@route('/video/cumhuriyet/lookup')
+def Lookup(url, title, thumb):
+    oc = ObjectContainer()
+    oc.add(VideoClipObject(
+	key = Callback(Lookup, url = url, title = title, thumb = thumb),
+	rating_key = url,
+	title = title,
+	thumb = thumb,
+	items = [
+	    MediaObject(
+		parts = [PartObject(key = url)],
+		optimized_for_streaming = True
+	    )
+	]
+    ))
+    return oc
