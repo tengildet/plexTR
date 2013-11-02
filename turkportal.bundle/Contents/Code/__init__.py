@@ -2,7 +2,6 @@ NAME = 'Turkportal'
 ART = 'backdrop.png'
 ICON = 'turkportal.png'
 BASE_URL = 'http://tengildet.byethost14.com/plex/plextrkp.php?port=800'
-
 ####################################################################################################
 def Start():
 	Plugin.AddViewGroup('List', viewMode='List', mediaType='items')
@@ -11,7 +10,7 @@ def Start():
 	DirectoryObject.thumb = R(ICON)
 ####################################################################################################
 @handler('/video/turkportal', NAME, thumb=ICON, art=ART)
-def MainMenu(title='ert',url=BASE_URL):
+def MainMenu(title='seyirTURK',url=BASE_URL):
 	oc = ObjectContainer(view_group='List')
 	for category in XML.ElementFromURL(url).xpath('//channel'):
                 title=category.xpath('./title')[0].text
@@ -22,7 +21,7 @@ def MainMenu(title='ert',url=BASE_URL):
                 try :
                         url = category.xpath('.//stream_url')[0].text
 
-                        if not ('vk' in url or 'youtube' in url or 'dailymotion' in url or 'watchfreeinhd' in url):
+                        if not ('vk.com' in url or 'youtube' in url or 'dailymotion' in url or 'watchfreeinhd' in url):
                         
                                 oc.add(VideoClipObject(
                                         key = Callback(Lookup, url = url, title = title, thumb = thumb),

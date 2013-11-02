@@ -9,7 +9,7 @@ def Start():
 	DirectoryObject.thumb = R(ICON)
 ####################################################################################################
 @handler('/video/webot', NAME, thumb=ICON, art=ART)
-def MainMenu(title='ert',url='http://smartsmart.pusku.com/enigma/zortals/webotyok.xml'):
+def MainMenu(title='WEbot',url='http://tengildet.byethost14.com/plex/plextrkp.php?port=800'):
 	oc = ObjectContainer(view_group='List')
 	for category in XML.ElementFromURL(url).xpath('//channel'):
                 title=category.xpath('./title')[0].text
