@@ -1,0 +1,9 @@
+[ 
+  {
+                "id":"Adult",
+                "label":"Adult Portallar veya Moduller Görüntülensin mi?",
+                "type":         "enum",
+                "values":       ["Evet", "Hayır"],
+                "default":      "Evet",
+        }
+]
