@@ -54,8 +54,7 @@ def MainMenu(title='turkportal',url=BASE_URL, sayac=0):
                                 url = category['Playlist']
                                 oc.add(DirectoryObject(key = Callback(MainMenu, title=title, url=url, sayac=1),title =title, thumb=thumb, summary=summary))
         if sayac==0:
-                oc.add(PrefsObject(title = 'Ayarlar',summary = 'Turkportal ayarlarini buradan yapabilirsiniz.', art=ObjectContainer.art))
-
+                oc.add(InputDirectoryObject(key=Callback(Setup), title='Ayarlar ANASAYFASI', summary="Turkportal ayarlarini buradan yapabilirsiniz.", prompt="Ayarlar'a girmek icin sifre giriniz..."))                                              
 	return oc
 ####################################################################################################
 @route('/video/turkportal/lookup')
@@ -75,3 +74,15 @@ def Lookup(url, title, thumb, summary):
 	]
     ))
     return oc
+####################################################################################################
+@route('/video/turkportal/setup')
+def Setup(query):
+        if query==Prefs['Password']:
+                oc = ObjectContainer()
+                oc.add(PrefsObject(title = 'Ayarlar',summary = 'Turkportal ayarlarini buradan yapabilirsiniz.', art=ObjectContainer.art))
+                return oc
+        else:
+                return MessageContainer("Sifre Yanlis","Lütfen tekrar deneyiniz")
+
+        
+    

@@ -5,5 +5,13 @@
                 "type":         "enum",
                 "values":       ["Evet", "Hayır"],
                 "default":      "Evet",
+        },
+  {
+                "id":"Password",
+                "label":"Yeni şifrenizi yazınız.",
+				"type":         "text",
+                "option":       "hidden",
+                "default":      "1234",
+                "secure":   "true",
         }
 ]
